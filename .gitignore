@@ -1,3 +1,4 @@
-\..*?\.swp
-\..*?\.ipynb
-__pycache__/
+.*.swp
+.*.ipynb
+__pycache__
+.ipynb_checkpoints
