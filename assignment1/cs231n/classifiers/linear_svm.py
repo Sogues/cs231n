@@ -28,11 +28,10 @@ def svm_loss_naive(W, X, y, reg):
   loss = 0.0
   for i in xrange(num_train):
     scores = X[i].dot(W)
-    correct_class_score = scores[y[i]]
     for j in xrange(num_classes):
       if j == y[i]:
         continue
-      margin = scores[j] - correct_class_score + 1 # note delta = 1
+      margin = scores[j] - scores[y[i]] + 1 # note delta = 1
       if margin > 0:
         loss += margin
         dW[:, j] += X[i]
@@ -77,7 +76,7 @@ def svm_loss_vectorized(W, X, y, reg):
   train_num = X.shape[0]
   class_num = W.shape[1]
   scores = X.dot(W)
-  svm_loss = scores - scores[range(train_num), list(y)].reshape(-1, 1) + np.ones((train_num, class_num))
+  svm_loss = scores - scores[range(train_num), list(y)].reshape(-1, 1) + 1
   svm_loss[range(train_num), list(y)] = 0
   svm_loss = np.maximum(svm_loss, 0)
   loss = np.sum(svm_loss)
