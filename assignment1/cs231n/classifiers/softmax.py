@@ -76,7 +76,6 @@ def softmax_loss_vectorized(W, X, y, reg):
   #############################################################################
 
   train_num = X.shape[0]
-  feature_num = X.shape[1]
   class_num = W.shape[1]
 
 
