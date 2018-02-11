@@ -94,7 +94,7 @@ def softmax_loss_vectorized(W, X, y, reg):
   softmax_output[range(train_num), list(y)] -= 1
   dW = X.T.dot(softmax_output)
 
-  loss = loss / train_num + reg * np.sum(W*W)
+  #loss = loss / train_num + reg * np.sum(W*W)
   dW = dW / train_num + 2 * reg * W
 
   #############################################################################
