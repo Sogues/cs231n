@@ -30,6 +30,49 @@ def affine_relu_backward(dout, cache):
     dx, dw, db = affine_backward(da, fc_cache)
     return dx, dw, db
 
+def affine_bn_dp_relu_forward(x, w, b, gamma, beta, bn_param, dropout_param):
+    out, fc_cache = affine_forward(x, w, b)
+    out, bn_cache = batchnorm_forward(out, gamma, beta, bn_param)
+    out, dp_cache = dropout_forward(out, dropout_param)
+    out, rl_cache = relu_forward(out)
+    cache = (fc_cache, bn_cache, dp_cache, rl_cache)
+    return out, cache
+
+def affine_bn_dp_relu_backward(dout, cache):
+    fc_cache, bn_cache, dp_cache, rl_cache = cache
+    dout = relu_backward(dout, rl_cache)
+    dout = dropout_backward(dout, dp_cache)
+    dout, dgamma, dbeta = batchnorm_backward(dout, bn_cache)
+    dx, dw, db = affine_backward(dout, fc_cache)
+    return dx, dw, db, dgamma, dbeta
+
+def affine_bn_relu_forward(x, w, b, gamma, beta, bn_param):
+    out, fc_cache = affine_forward(x, w, b)
+    out, bn_cache = batchnorm_forward(out, gamma, beta, bn_param)
+    out, rl_cache = relu_forward(out)
+    cache = (fc_cache, bn_cache, rl_cache)
+    return out, cache
+
+def affine_bn_relu_backward(dout, cache):
+    fc_cache, bn_cache, rl_cache = cache
+    dout = relu_backward(dout, rl_cache)
+    dout, dgamma, dbeta = batchnorm_backward(dout, bn_cache)
+    dx, dw, db = affine_backward(dout, fc_cache)
+    return dx, dw, db, dgamma, dbeta
+
+def affine_dp_relu_forward(x, w, b, dropout_param):
+    out, fc_cache = affine_forward(x, w, b)
+    out, dp_cache = dropout_forward(out, dropout_param)
+    out, rl_cache = relu_forward(out)
+    cache = (fc_cache, dp_cache, rl_cache)
+    return out, cache
+
+def affine_dp_relu_backward(dout, cache):
+    fc_cache, dp_cache, rl_cache = cache
+    dout = relu_backward(dout, rl_cache)
+    dout = dropout_backward(dout, dp_cache)
+    dx, dw, db = affine_backward(dout, fc_cache)
+    return dx, dw, db
 
 def conv_relu_forward(x, w, b, conv_param):
     """
