@@ -35,12 +35,21 @@ def rnn_step_forward(x, prev_h, Wx, Wh, b):
     # and cache variables respectively.                                          #
     ##############################################################################
     #pass
+    x_Wx = np.dot(x, Wx)
+    prev_h_Wh = np.dot(prev_h, Wh)
+    # Calculate next hidden state = tanh(x*Wx + prev_H*Wh + b)
+    next_h = np.tanh(x_Wx + prev_h_Wh + b)
+    """
+    x = x.reshape(x.shape[0], -1)
+    print(x.shape, prev_h.shape)
+    print(Wx.shape, Wh.shape)
     next_h = (
             np.tanh(
                 np.concatenate((x, prev_h), axis=1).dot(
                     np.concatenate((Wx, Wh), axis=0)
                     ) + b)
                 )
+    """
     cache = (next_h, x, prev_h, Wx, Wh, b)
     ##############################################################################
     #                               END OF YOUR CODE                             #
@@ -185,7 +194,14 @@ def word_embedding_forward(x, W):
     #                                                                            #
     # HINT: This can be done in one line using NumPy's array indexing.           #
     ##############################################################################
-    pass
+    #pass
+    """
+    for row in range(x.shape[0]):
+        for column in range(x.shape[1]):
+            out[row, column, :] = W[x[row, column], :]
+    """
+    out = W[x, :]
+    cache = x, W
     ##############################################################################
     #                               END OF YOUR CODE                             #
     ##############################################################################
@@ -214,7 +230,21 @@ def word_embedding_backward(dout, cache):
     # Note that Words can appear more than once in a sequence.                   #
     # HINT: Look up the function np.add.at                                       #
     ##############################################################################
-    pass
+    #pass
+    """
+    np.add.at(a, indices, b) exec like
+
+    indices = np.array(indices)
+    index_1, index_2, index_3, .. = indices.shape
+    for idx_1 in range(index_1):
+        for idx_2 in range(index_2):
+            for idx_3 in range(index_3):
+                ...
+                a[indices[idx_1, idx_2, idx_3, ...]] += b[idx_1, idx_2, idx_3, ..., :]
+    """
+    x, W = cache
+    dW = np.zeros_like(W)
+    np.add.at(dW, x, dout)
     ##############################################################################
     #                               END OF YOUR CODE                             #
     ##############################################################################
