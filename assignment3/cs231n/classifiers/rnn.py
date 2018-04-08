@@ -146,7 +146,10 @@ class CaptioningRNN(object):
                     initial_hidden_state,
                     Wx, Wh, b)
         elif self.cell_type == 'lstm':
-            pass
+            h_out, cache_out = lstm_forward(
+                    embedding_captions_in,
+                    initial_hidden_state,
+                    Wx, Wh, b)
         else:
             raise ValueError('Invalid cell_type "%s"' % self.cell_type)
         scores, cache_scores = temporal_affine_forward(
@@ -156,7 +159,7 @@ class CaptioningRNN(object):
         if self.cell_type == 'rnn':
             dout, dh0, dWx, dWh, db = rnn_backward(dh, cache_out)
         elif self.cell_type == 'lstm':
-            pass
+            dout, dh0, dWx, dWh, db = lstm_backward(dh, cache_out)
         else:
             raise ValueError('Invalid cell_type "%s"' % self.cell_type)
         dW_embed = word_embedding_backward(dout, cache_embedding)
@@ -245,7 +248,11 @@ class CaptioningRNN(object):
                         cur_hidden_state,
                         Wx, Wh, b)
             elif self.cell_type == 'lstm':
-                pass
+                cur_hidden_state, cur_cell_statem, _ = lstm_step_forward(
+                        word_embed,
+                        cur_hidden_state,
+                        cur_cell_state,
+                        Wx, Wh, b)
             else:
                 raise ValueError('Invalid cell_type "%s"' % self.cell_type)
             cur_scores, _ = affine_forward(cur_hidden_state, W_vocab, b_vocab)
